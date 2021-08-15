@@ -1,0 +1,15 @@
+{
+    "name": "minimal/ahzam",
+    "authors": [
+        {
+            "name": "Ahzam-Lathiya",
+            "email": "ahzam.lathiya@gmail.com"
+        }
+    ],
+    "autoload": {
+      "psr-4": {
+        "app\\" : "./"
+      }
+    },
+    "require": {}
+}
