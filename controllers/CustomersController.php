@@ -9,31 +9,37 @@ use app\models\Products;
 use app\models\ProductLines;
 use app\models\Customers;
 use app\core\Request;
-use app\core\Response;
+use Swoole\Http\Response;
 
 class CustomersController extends Controller
 {
   
-  public function getCustomers()
+  public function getCustomers(Request $request, Response $response)
   {
     $customer = new Customers();
 
     $this->setLayout('main');
     
+    /*
     if( !Application::$app->session->get('customers') )
     {
       Application::$app->session->set('customers', $customer->fetchAllrecords() );
     }
+    */
     
-    return $this->render('customers', ['allCustomers' => Application::$app->session->get('customers') ] );
+    $response->setStatusCode(200);
+    $response->header('Content-Type', 'text/html');
+    return $response->end( $this->render('customers', ['allCustomers' => $customer->fetchAllrecords() ] ) );
   }
   
   
-  public function getCustomer(Request $request)
+  public function getCustomer(Request $request, Response $response)
   {
     $customer = new Customers();
     
-    return json_encode( $customer->fetchCustomer( $request->getOrderPath() ) );
+    $response->header('Content-Type', 'application/json');
+    $response->setStatusCode(200);
+    return $response->end( json_encode( $customer->fetchCustomer( $request->getOrderPath() ) ) );
   }
   
 }

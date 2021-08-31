@@ -9,7 +9,7 @@ use app\models\Products;
 use app\models\ProductLines;
 use app\models\Customers;
 use app\core\Request;
-use app\core\Response;
+use Swoole\Http\Response;
 
 class OrdersController extends Controller
 {
@@ -48,31 +48,39 @@ class OrdersController extends Controller
   
     $orderID = $request->getOrderPath();
     
-    return $this->render('order_template', [
+    $response->header('Content-Type', 'text/html');
+    $response->setStatusCode(200);
+    return $response->end( $this->render('order_template', [
                                             'orderID' => $orderID,
                                             'orderDetails' => $order->fetchOrderView($orderID),
                                             'order' => $order->fetchSingleOrder($orderID),
-                                           ]);
+                                           ]) );
   }
 
 
-  public function getOrders()
+  public function getOrders(Request $request, Response $response)
   {
     $orders = new Orders();
 
     $this->setLayout('main');
     
+    /*
     if( !Application::$app->session->get('orders') )
     {
       Application::$app->session->set('orders', $orders->fetchAllRecords() );
     }
+    */
+    $allOrd = $orders->fetchAllRecords();
     
-    $count = count(Application::$app->session->get('orders') );
+    //$count = count(Application::$app->session->get('orders') );
+    $count = count($allOrd);
     
-    return $this->render('order', [
-                                   'allOrders' => Application::$app->session->get('orders'),
+    $response->header('Content-Type', 'text/html');
+    $response->setStatusCode(200);
+    return $response->end( $this->render('order', [
+                                   'allOrders' => $allOrd,
                                    'statusTypes' => $orders->getStatusTypes(),
-                                   'count'     => $count, ]);
+                                   'count'     => $count, ]) );
   }
   
 }

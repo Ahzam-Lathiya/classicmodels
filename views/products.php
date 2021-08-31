@@ -412,7 +412,7 @@ form.addEventListener('submit', function(){
 
 });
 
-let evtSource = new EventSource('http://127.0.0.1:5000/pusher.php');
+let evtSource = new EventSource('http://127.0.0.1:8000/pusher');
 console.log(evtSource.withCredentials);
 console.log(evtSource.readyState);
 console.log(evtSource.url);

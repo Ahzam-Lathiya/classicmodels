@@ -3,6 +3,7 @@
 namespace app\core;
 
 use app\core\exceptions\NotFoundException;
+use Swoole\Http\Response as Response;
 
 class Router
 {
@@ -21,9 +22,25 @@ class Router
   {
     $path = $this->request->getPath();
     $method = $this->request->getMethod();
-    
+
+    /*
+    if($path === '/favicon.ico')
+    {
+      return $this->response->end();
+    }
+    */
+    echo "Path: $path" . PHP_EOL;
+
     $callback = $this->routes[$method][$path] ?? false;
-    
+
+        $controller = new $callback[0]();
+        
+        //set the controller according to the request through the app
+        Application::$app->setController($controller);
+        
+        return call_user_func( array($controller, $callback[1]), $this->request, $this->response );
+
+    /*    
     if($callback === false)
     {
       throw new NotFoundException();
@@ -43,6 +60,7 @@ class Router
       }
 
     }
+    */
     
   }
 

@@ -3,6 +3,8 @@
 namespace app\core;
 
 use app\core\db\Database;
+use Swoole\Http\Request as SwooleRequest;
+use Swoole\Http\Response as Response;
 
 class Application
 {
@@ -18,17 +20,18 @@ class Application
   public Session $session;
   public ?UserModel $user;
 
-  public function __construct($config)
+  public function __construct($config, $swooleRequest, Response $swooleResponse)
   {
     $this->userClass = $config['userClass'];
     $this->db = new Database();
-    $this->request = new Request();
-    $this->response = new Response();
+    $this->request = new Request( $swooleRequest);
+    $this->response = $swooleResponse;
     $this->router = new Router($this->request, $this->response);
     $this->view = new View();
-    $this->session = new Session();
+    //$this->session = new Session();
     self::$app = $this;
     
+    /*
     $primaryValue = $this->session->get('user');
     
     //if primary value exists then it means the visitor is logged in
@@ -42,6 +45,7 @@ class Application
     {
       $this->user = null;
     }
+    */
   }
 
   public function login(UserModel $user)
@@ -70,16 +74,18 @@ class Application
 
   public function run()
   {
+    
     try
     {
-      echo $this->router->resolve();
+      return $this->router->resolve();
     }
 
     catch(\Exception $e)
     {
       $this->response->setStatusCode($e->getCode());
-      echo $this->view->renderView('errorView', ['exception' => $e] );
+      return $this->response->end( $this->view->renderView('errorView', ['exception' => $e] ) );
     }
+    
   }
 
 

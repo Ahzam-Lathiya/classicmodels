@@ -7,20 +7,23 @@ use app\models\Offices;
 use app\core\Application;
 use app\core\Controller;
 use app\core\Request;
+use Swoole\Http\Response;
 use app\core\exceptions\ForbiddenException;
 
 class ProfileController extends controller
 {
 
-  public function Login()
+  public function Login(Request $request, Response $response)
   {
     $this->setLayout('auth');
 
-    return $this->render('login');
+    $response->setStatusCode(200);
+    $response->header('Content-Type', 'text/html');
+    return $response->end($this->render('login') );
   }
 
 
-  public function showProfile()
+  public function showProfile(Request $request, Response $response)
   {
     //if the user is not logged in
     if( Application::isGuest() )

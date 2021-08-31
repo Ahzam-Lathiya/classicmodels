@@ -2,22 +2,22 @@
 
 namespace app\controllers;
 
-//header("Content-Type: text/event-stream");
-
 use app\models\Employees;
 use app\core\Controller;
-use app\core\Response;
+use Swoole\Http\Response;
 use app\core\Request;
 use app\core\Application;
 
 class LoginController extends controller
 {
 
-  public function Login()
+  public function Login(Request $request, Response $response)
   {
     $this->setLayout('auth');
 
-    return $this->render('login');
+    $response->setStatusCode(200);
+    $response->header('Content-Type', 'text/html');
+    return $response->end( $this->render('login') );
   }
 
   
@@ -40,7 +40,8 @@ class LoginController extends controller
         if(Application::$app->login($employee))
         {
           $response->setStatusCode(200);
-          return json_encode(['message' => 'Successfully Logged In.']);
+          $response->header('Content-Type', 'Application/json');
+          return $response->end( json_encode(['message' => 'Successfully Logged In.']) );
         }
         
         //$response->redirect("/");
@@ -49,7 +50,8 @@ class LoginController extends controller
       else
       {
         $response->setStatusCode(401);
-        return json_encode(['message' => 'Incorrect Password for User ID']);
+        $response->header('Content-Type', 'Application/json');
+        return $response->end( json_encode(['message' => 'Incorrect Password for User ID']) );
       }
       
     }
@@ -57,7 +59,8 @@ class LoginController extends controller
     else
     {
       $response->setStatusCode(404);
-      return json_encode(['message' => 'User ID does not exist']);
+      $response->header('Content-Type', 'Application/json');
+      return $response->end( json_encode(['message' => 'User ID does not exist']) );
     }
 
   }

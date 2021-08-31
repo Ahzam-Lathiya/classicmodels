@@ -9,28 +9,32 @@ use app\models\Products;
 use app\models\ProductLines;
 use app\models\Customers;
 use app\core\Request;
-use app\core\Response;
+use Swoole\Http\Response;
 
 class ProductLinesController extends Controller
 {
   
-  public function getProductlines()
+  public function getProductlines(Request $request, Response $response)
   {
     $lines = new ProductLines();
 
     $this->setLayout('main');
     
-    return $this->render('productLines', ['productLines' => $lines ] );
+    $response->setStatusCode(200);
+    $response->header('Content-Type', 'text/html');
+    return $response->end( $this->render('productLines', ['productLines' => $lines ] ) );
   }
   
   
-  public function productLineForm()
+  public function productLineForm(Request $request, Response $response)
   {
     $lines = new ProductLines();
 
     $this->setLayout('main');
     
-    return $this->render('createProductLine');
+    $response->setStatusCode(200);
+    $response->header('Content-Type', 'text/html');
+    return $response->end( $this->render('createProductLine') );
   }
   
   
@@ -43,7 +47,8 @@ class ProductLinesController extends Controller
     if($message)
     {
       $response->setStatusCode(200);
-      return json_encode(['message' => $message]);
+      $response->header('Content-Type', 'Application/json');
+      return $response->end( json_encode(['message' => $message]) );
     }
     
     //return $response->redirect('/productLines/addProductLine');
