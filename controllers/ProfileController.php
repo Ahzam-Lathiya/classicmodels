@@ -37,11 +37,11 @@ class ProfileController extends controller
     
     $employee = Application::$app->user;
     
-    return $this->render('profile', ['employee' => $employee] );
+    return $response->end( $this->render('profile', ['employee' => $employee] ) );
   }
 
   
-  public function editPassword(Request $request)
+  public function editPassword(Request $request, Response $response)
   {
     $body = $request->getRequestBody();
 
@@ -53,11 +53,11 @@ class ProfileController extends controller
       $employee->updateAttribute( 'password', $password );
     }
     
-    return $this->render('profile', ['message' => "Password Changed Successfully"] );
+    return $response->end( $this->render('profile', ['message' => "Password Changed Successfully"] ) );
   }
 
-  
-  public function registerPage()
+  //GET request
+  public function registerPage(Request $request, Response $response)
   {
     //check if the user is logged in
     if( Application::isGuest() )
@@ -85,20 +85,23 @@ class ProfileController extends controller
       Application::$app->session->set('offices', $office->getCities() );
     }
   
-    return $this->render('register', [
+    /*
+    return $response->end( $this->render('register', [
                                       'offices' => Application::$app->session->get('offices'),
                                       'managers' => Application::$app->session->get('managers')
-                                     ]);
+                                     ]) );
+    */                                
+    return $response->end( json_encode(Application::$app->session->get('offices') ) );
   }
   
-  
-  public function createUser(Request $request)
+  //POST request
+  public function createUser(Request $request, Response $response)
   {
     $employee = Application::$app->user;
     
     //$employee->loadData( $request->getRequestBody() );
     
-    return $employee->insertRecord( $request->getRequestBody() );
+    return $response->end( $employee->insertRecord( $request->getRequestBody() ) );
     
     //return "Wow Grape!!";
     //header("Location:/");

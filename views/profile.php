@@ -4,7 +4,6 @@
 $this->title = 'Profile';
 
 ?>
-<button id="close">Stop Listening</button>
 <div>
 <ul>
 
@@ -52,33 +51,5 @@ if( $message )
 </div>
 
 <script>
-
-let evtSource = new EventSource('http://127.0.0.1:8000/push');
-console.log(evtSource.withCredentials);
-console.log(evtSource.readyState);
-console.log(evtSource.url);
-
-evtSource.onopen = function(){
-  console.log('Listening for events..');
-}
-
-evtSource.onmessage = function(e){
-  console.log(e.data);
-}
-
-evtSource.onerror = function(){
-  console.log('EventSource Failed');
-}
-
-window.addEventListener('popState', function(){
-  console.log('Connection closed');
-  evtSource.close();
-});
-
-document.querySelector('#close').addEventListener('click', function()
-{
-  console.log('Connection closed');
-  evtSource.close();
-});
 
 </script>

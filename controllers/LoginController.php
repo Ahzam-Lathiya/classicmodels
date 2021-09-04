@@ -20,7 +20,7 @@ class LoginController extends controller
     return $response->end( $this->render('login') );
   }
 
-  
+  //POST request
   public function handleLoginform(Request $request, Response $response)
   {
     $employee = new Employees();

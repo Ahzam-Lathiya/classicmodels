@@ -1,3 +1,4 @@
+<link rel="icon" href="data:,">
 <?php
 //'this' is an instance of the app\core\View class
 

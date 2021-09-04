@@ -2,6 +2,7 @@
 
 require_once "../vendor/autoload.php";
 
+
 use app\controllers\SiteController;
 use app\controllers\LoginController;
 use app\controllers\OrdersController;
@@ -17,7 +18,6 @@ use app\core\Application;
 use Swoole\Coroutine;
 use Swoole\HTTP\Server as HttpServer;
 
-
 Swoole\Runtime::enableCoroutine(SWOOLE_HOOK_ALL);
 
 
@@ -25,9 +25,9 @@ $server = new HttpServer('127.0.0.1', 8000, SWOOLE_PROCESS, SWOOLE_SOCK_TCP);
 
 
 $server->set([
-    'worker_num' => 4,      // The number of worker processes to start
+    //'worker_num' => 4,      // The number of worker processes to start
     //'task_worker_num' => 4,  // The amount of task workers to start
-    'backlog' => 128,       // TCP backlog connection number
+    //'backlog' => 128,       // TCP backlog connection number
     'enable_coroutine' => true,
 ]);
 /*
@@ -37,13 +37,13 @@ $server->on("WorkerStart", function(Swoole\Server $server,int $workerId) {
 
     if($workerId >= $server->setting['worker_num'])
     {
-      //swoole_set_process_name("php {$argv[0]} task worker");
+      swoole_set_process_name("php {$argv[0]} task worker");
       echo "php {$argv[0]} task worker with ID:$workerId" . PHP_EOL;
     }
     
     else
     {
-      //swoole_set_process_name("php {$argv[0]} event worker");
+      swoole_set_process_name("php {$argv[0]} event worker");
       echo "php {$argv[0]} task worker with ID:$workerId" . PHP_EOL;
     }
 });
@@ -58,13 +58,6 @@ $server->on('start', function (Swoole\Server $server) {
 $server->on('request', function(Swoole\Http\Request $request, Swoole\Http\Response $response)
 {
 
-/*
-if($request->server['path_info'] === '/favicon.ico' || $request->server['request_uri'] === '/favicon.ico')
-{
-  $response->end();
-  return;
-}
-*/
 
 $config = ['userClass' => Employees::class];
 

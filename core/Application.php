@@ -17,7 +17,7 @@ class Application
   public static Application $app;
   public string $layout = 'main';
   public View $view;
-  public Session $session;
+  public RedisSession $session;
   public ?UserModel $user;
 
   public function __construct($config, $swooleRequest, Response $swooleResponse)
@@ -28,10 +28,13 @@ class Application
     $this->response = $swooleResponse;
     $this->router = new Router($this->request, $this->response);
     $this->view = new View();
-    //$this->session = new Session();
+    $this->session = new RedisSession();
     self::$app = $this;
     
-    /*
+    
+    //$primaryValue = $this->session->get('user');
+    //use session ID instead of 'user'
+    
     $primaryValue = $this->session->get('user');
     
     //if primary value exists then it means the visitor is logged in
@@ -42,6 +45,15 @@ class Application
     }
     
     else
+    {
+      $this->user = null;
+    }
+    
+    /*
+    $this->user = (new $this->userClass() );
+    
+    //if user isn't logged in
+    if( !$this->user->employeeNumber )
     {
       $this->user = null;
     }
@@ -62,7 +74,9 @@ class Application
 
   public function logout()
   {
-    $this->session->destroy();
+    //$this->session->remove( $this->user->employeeNumber );
+    $this->session->remove( 'user' );
+    $this->user = null;
   }
   
   

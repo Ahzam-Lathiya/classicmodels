@@ -36,7 +36,9 @@ use app\core\Application;
         </li>
 
         <?php 
-              if( isset($_SESSION['user']) ): ?>  
+              //if( isset($_SESSION['user']) ):
+              if( !Application::$app->isGuest() ):
+        ?>  
         
         <li class="nav-item">
           <a class="nav-link" href="/secret1">Secret1</a>
@@ -67,7 +69,9 @@ use app\core\Application;
 
 
         <?php 
-              if( !isset($_SESSION['user']) ): ?>
+              //if( !isset($_SESSION['user']) ):
+              if( Application::$app->isGuest() ):
+        ?>
         
         <li class="nav-item">
           <a class="nav-link" href="/login">Login</a>
