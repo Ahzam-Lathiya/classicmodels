@@ -7,7 +7,29 @@ class Session
 {
   public function __construct()
   {
-    session_start();
+    $redisObj = new \Redis();
+    
+    $redisObj->connect('127.0.0.1', 6379);
+    
+    $sessHandler = new RedisSessionHandler($redisObj);
+    
+    
+    session_set_save_handler(
+        array($sessHandler, 'open'),
+        array($sessHandler, 'close'),
+        array($sessHandler, 'read'),
+        array($sessHandler, 'write'),
+        array($sessHandler, 'destroy'),
+        array($sessHandler, 'gc')
+    );
+    
+    //echo session_status() . PHP_EOL;
+    if(session_status() != PHP_SESSION_ACTIVE)
+    {
+      session_start();
+    }
+    //session_start();
+    //new SessionManager();
   }
 
   public function set($key, $value)
@@ -22,7 +44,7 @@ class Session
 
   public function remove($key)
   {
-    unset( $_SESSION[$key] );    
+    unset( $_SESSION[$key] );
   }
 
   public function destroy()

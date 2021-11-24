@@ -29,16 +29,15 @@ class Router
       return $this->response->end();
     }
     */
-    echo "Path: $path" . PHP_EOL;
 
     $callback = $this->routes[$method][$path] ?? false;
 
-        $controller = new $callback[0]();
+    $controller = new $callback[0]();
         
-        //set the controller according to the request through the app
-        Application::$app->setController($controller);
+    //set the controller according to the request through the app
+    Application::$app->setController($controller);
         
-        return call_user_func( array($controller, $callback[1]), $this->request, $this->response );
+    return call_user_func( array($controller, $callback[1]), $this->request, $this->response );
 
     /*    
     if($callback === false)

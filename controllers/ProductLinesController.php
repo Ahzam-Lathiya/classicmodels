@@ -10,12 +10,19 @@ use app\models\ProductLines;
 use app\models\Customers;
 use app\core\Request;
 use Swoole\Http\Response;
+use app\core\exceptions\ForbiddenException;
 
 class ProductLinesController extends Controller
 {
-  
+  //GET
   public function getProductlines(Request $request, Response $response)
   {
+    //if the user is not logged in
+    if( Application::isGuest() )
+    {
+      throw new ForbiddenException();
+    }
+  
     $lines = new ProductLines();
 
     $this->setLayout('main');
@@ -25,9 +32,15 @@ class ProductLinesController extends Controller
     return $response->end( $this->render('productLines', ['productLines' => $lines ] ) );
   }
   
-  
+  //GET
   public function productLineForm(Request $request, Response $response)
   {
+    //if the user is not logged in
+    if( Application::isGuest() )
+    {
+      throw new ForbiddenException();
+    }
+
     $lines = new ProductLines();
 
     $this->setLayout('main');
@@ -38,6 +51,7 @@ class ProductLinesController extends Controller
   }
   
   
+  //POST
   public function createProductLine(Request $request, Response $response)
   {
     $lines = new ProductLines();

@@ -6,18 +6,18 @@ use Swoole\Http\Request as SwooleRequest;
 
 class Request
 {
-  public SwooleRequest $request;
+  public SwooleRequest $swooleRequest;
 
   public function __construct(SwooleRequest $request)
   {
-    $this->request = $request;
+    $this->swooleRequest = $request;
   }
 
   public function getPath()
   {
     //get the requested URI as string or just '/' if $_SERVER returns null
     //$path = $_SERVER['REQUEST_URI'] ?? '/';
-    $path = $this->request->server['request_uri'] ?? '/';
+    $path = $this->swooleRequest->server['request_uri'] ?? '/';
     
     //find position of the '?' in request url if it exists
     $quesPos = strpos($path, '?');
@@ -42,7 +42,7 @@ class Request
   public function getProductPath()
   {
     //$path = $_SERVER['REQUEST_URI'] ?? '/';
-    $path = $this->request->server['request_uri'] ?? '/';
+    $path = $this->swooleRequest->server['request_uri'] ?? '/';
     
     $pathArr = explode('/', $path);
     
@@ -58,7 +58,7 @@ class Request
   public function getOrderPath()
   {
     //$path = $_SERVER['REQUEST_URI'] ?? '/';
-    $path = $this->request->server['request_uri'] ?? '/';
+    $path = $this->swooleRequest->server['request_uri'] ?? '/';
     
     $pathArr = explode('/', $path);
     
@@ -73,7 +73,7 @@ class Request
   public function getEndofPath()
   {
     //$path = $_SERVER['REQUEST_URI'] ?? '/';
-    $path = $this->request->server['request_uri'] ?? '/';
+    $path = $this->swooleRequest->server['request_uri'] ?? '/';
     
     $pathArr = explode('/', $path);
     
@@ -84,7 +84,7 @@ class Request
   public function getMethod()
   {
     //return $_SERVER['REQUEST_METHOD'];
-    return $this->request->server['request_method'] ?? '/';
+    return $this->swooleRequest->server['request_method'] ?? '/';
 
   }
   
@@ -103,7 +103,7 @@ class Request
   
   public function getRequestBody()
   {
-    return $this->request->post;
+    return $this->swooleRequest->post;
   }
 
 }

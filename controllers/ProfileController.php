@@ -85,13 +85,12 @@ class ProfileController extends controller
       Application::$app->session->set('offices', $office->getCities() );
     }
   
-    /*
     return $response->end( $this->render('register', [
                                       'offices' => Application::$app->session->get('offices'),
                                       'managers' => Application::$app->session->get('managers')
                                      ]) );
-    */                                
-    return $response->end( json_encode(Application::$app->session->get('offices') ) );
+                                
+    //return $response->end( json_encode(Application::$app->session->get('offices') ) );
   }
   
   //POST request

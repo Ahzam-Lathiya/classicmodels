@@ -10,6 +10,7 @@ use app\models\ProductLines;
 use app\models\Customers;
 use app\core\Request;
 use Swoole\Http\Response;
+use app\core\exceptions\ForbiddenException;
 
 class OrdersController extends Controller
 {
@@ -22,7 +23,10 @@ class OrdersController extends Controller
     
     if( $body['choice'] === 'all' )
     {
-      return json_encode($allOrders);
+      $response->header('Content-Type', 'application/json');
+      $response->setStatusCode(200);
+      
+      return $response->end( json_encode($allOrders) );
     }
     
     $selected = [];
@@ -35,8 +39,12 @@ class OrdersController extends Controller
       }
 
     }
+
+    $response->header('Content-Type', 'application/json');
+    $response->setStatusCode(200);
     
-    return json_encode($selected);
+    return $response->end( json_encode($selected) );
+    //return json_encode($selected);
   }
   
   
@@ -60,20 +68,35 @@ class OrdersController extends Controller
 
   public function getOrders(Request $request, Response $response)
   {
+    //if the user is not logged in
+    if( Application::isGuest() )
+    {
+      throw new ForbiddenException();
+    }
+    
     $orders = new Orders();
 
     $this->setLayout('main');
     
-    /*
+    $allOrd = [];
+    
     if( !Application::$app->session->get('orders') )
     {
-      Application::$app->session->set('orders', $orders->fetchAllRecords() );
+      $allOrd = $orders->fetchAllRecords();
+      Application::$app->session->set('orders',  $allOrd);
     }
-    */
-    $allOrd = $orders->fetchAllRecords();
     
-    //$count = count(Application::$app->session->get('orders') );
-    $count = count($allOrd);
+    else
+    {
+      $allOrd = Application::$app->session->get('orders');
+    }
+    
+    //$allOrd = $orders->fetchAllRecords();
+    
+    echo $allOrd . PHP_EOL;
+    
+    $count = count($allOrd );
+    //$count = count($allOrd);
     
     $response->header('Content-Type', 'text/html');
     $response->setStatusCode(200);

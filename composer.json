@@ -11,5 +11,13 @@
         "app\\" : "./"
       }
     },
-    "require": {}
+    
+    "autoload-dev": {
+      "psr-4": {
+        "Tests\\" : "tests/"
+      }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
 }

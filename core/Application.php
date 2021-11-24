@@ -17,7 +17,7 @@ class Application
   public static Application $app;
   public string $layout = 'main';
   public View $view;
-  public RedisSession $session;
+  public SessionManager $session;
   public ?UserModel $user;
 
   public function __construct($config, $swooleRequest, Response $swooleResponse)
@@ -28,21 +28,29 @@ class Application
     $this->response = $swooleResponse;
     $this->router = new Router($this->request, $this->response);
     $this->view = new View();
-    $this->session = new RedisSession();
+    $this->session = new SessionManager();
     self::$app = $this;
     
     
     //$primaryValue = $this->session->get('user');
     //use session ID instead of 'user'
     
+    /*
     $primaryValue = $this->session->get('user');
     
     //if primary value exists then it means the visitor is logged in
-    if($primaryValue)
+    if($primaryValue)*/
+    
+    $sessID = $this->request->swooleRequest->cookie['userSess'];
+    
+    if($this->session->sessionExists($sessID) >= 1)
     {
+      $this->session->sessionID = $sessID;
+      $primaryValue = $this->session->get('user');
       $primaryKey = (new $this->userClass() )->primaryKey();
       $this->user = (new $this->userClass() )->findOne( [$primaryKey => $primaryValue] );
     }
+    
     
     else
     {
@@ -57,7 +65,14 @@ class Application
     {
       $this->user = null;
     }
+    
+    catch(\Exception $e)
+    {
+      $this->response->setStatusCode($e->getCode());
+      return $this->response->end( $this->view->renderView('errorView', ['exception' => $e] ) );
+    }
     */
+    
   }
 
   public function login(UserModel $user)
@@ -67,8 +82,22 @@ class Application
     
     $primaryValue = $user->{$primaryKey};
     
+    //generate random alphanum to store it as session id.
+    //init a redis session and dump the user id or object with the session id.
+    //set a cookie with the same sess ID with user key.
+    
+    $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+    //generate a rand
+    $rand = substr(str_shuffle($permitted_chars), 0, 20);
+    
+    $this->session->setSession($rand);
+    
     // $_SESSION['user'] = 1088;
     $this->session->set('user', $primaryValue);
+    
+    $this->response->cookie($key = 'userSess', $value = $rand);
+    
     return true;
   }
 

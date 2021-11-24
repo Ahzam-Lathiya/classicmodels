@@ -17,7 +17,7 @@ class ContextManager
         $content->key = $value;
 
         // Short method of setting a new context value, same as above code...
-        Co::getContext()[$key] = $value;
+        //Co::getContext()[$key] = $value;
     }
 
     // Navigate the coroutine tree and search for the requested key

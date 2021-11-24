@@ -25,10 +25,10 @@ $server = new HttpServer('127.0.0.1', 8000, SWOOLE_PROCESS, SWOOLE_SOCK_TCP);
 
 
 $server->set([
-    //'worker_num' => 4,      // The number of worker processes to start
+    'worker_num' => 1,      // The number of worker processes to start
     //'task_worker_num' => 4,  // The amount of task workers to start
     //'backlog' => 128,       // TCP backlog connection number
-    'enable_coroutine' => true,
+    'enable_coroutine' => true
 ]);
 /*
 $server->on("WorkerStart", function(Swoole\Server $server,int $workerId) {
@@ -82,7 +82,7 @@ $app->router->routes['POST']["/products/addProduct"] = [ProductsController::clas
 $app->router->routes['GET']['/pusher'] = [ProductsController::class, 'serverPush'];
 
 $app->router->routes['GET']["/productLines/addProductLine"] = [ProductLinesController::class, 'productLineForm'];
-$app->router->routes['POST']["/productLines/addProductLine"] = [ProductLinesController::class, 'createProductLine'];
+$app->router->routes['POST']["/productLines/createProductLine"] = [ProductLinesController::class, 'createProductLine'];
 $app->router->routes['GET']['/productLines'] = [ProductLinesController::class, 'getProductlines'];
 
 $app->router->routes['GET']['/customers'] = [CustomersController::class, 'getCustomers'];
