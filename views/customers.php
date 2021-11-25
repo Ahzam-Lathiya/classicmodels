@@ -1,6 +1,6 @@
 <?php
 
-$this->title = 'Products';
+$this->title = 'Customers';
 
 ?>
 <style>

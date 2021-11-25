@@ -9,6 +9,7 @@ use app\models\Products;
 use app\models\ProductLines;
 use app\models\Customers;
 use app\core\Request;
+use app\core\exceptions\ForbiddenException;
 use Swoole\Http\Response;
 
 class ProductsController extends Controller
@@ -16,26 +17,29 @@ class ProductsController extends Controller
 
   public function getProducts(Request $request, Response $response)
   {
+    if( Application::isGuest() )
+    {
+      throw new ForbiddenException;
+    }
+    
     $products = new Products();
 
     $this->setLayout('main');
     
-    /*
     if( !Application::$app->session->get('products') )
     {
       Application::$app->session->set('products', $products->fetchAllRecords() );
     }
-    */
 
-    $allProducts = $products->fetchAllRecords();
+    //$allProducts = $products->fetchAllRecords();
     
-    //$count = count(Application::$app->session->get('products') );
-    $count = count($allProducts );
+    $count = count(Application::$app->session->get('products') );
+    //$count = count($allProducts );
     
     $response->header('Content-Type', 'text/html');
     $response->setStatusCode(200);
     return $response->end( $this->render('products', [
-                                      'allProducts' => $allProducts,
+                                      'allProducts' => Application::$app->session->get('products'),
                                       'count' => $count, ]) );
   }
 
@@ -80,11 +84,11 @@ class ProductsController extends Controller
     $response->setStatusCode(200);
     
     //update the products in session with new product
-    //Application::$app->session->set('products', $product->fetchAllRecords() );
+    Application::$app->session->update('products', $product->fetchAllRecords() );
     
     $response->redirect('/products/addProduct');
   }
-    
+  
   
   public function fetchAllNames(Request $request, Response $response)
   {

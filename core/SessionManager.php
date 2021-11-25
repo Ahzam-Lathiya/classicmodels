@@ -47,6 +47,12 @@ class SessionManager
   {
     $this->sessionID = $id;
   }
+
+  public function update($key, $value)
+  {
+    $this->remove($key);
+    $this->set($key, $value);
+  }
   
   
   public function sessionExists($sessID)

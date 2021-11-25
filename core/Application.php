@@ -104,7 +104,8 @@ class Application
   public function logout()
   {
     //$this->session->remove( $this->user->employeeNumber );
-    $this->session->remove( 'user' );
+    //$this->session->remove( 'user' );
+    $this->session->destroy();
     $this->user = null;
   }
   
