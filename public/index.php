@@ -20,6 +20,19 @@ use Swoole\HTTP\Server as HttpServer;
 
 Swoole\Runtime::enableCoroutine(SWOOLE_HOOK_ALL);
 
+//load configuration from .env file
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
+
+$config = [
+           'userClass' => Employees::class,
+           'DB_CONFIG' => 
+            [
+              'dsn' => $_ENV['DB_DSN'],
+              'user' => $_ENV['DB_USER'],
+              'pass' => $_ENV['DB_PASS']
+            ]
+          ];
 
 $server = new HttpServer('127.0.0.1', 8000, SWOOLE_PROCESS, SWOOLE_SOCK_TCP);
 
@@ -55,11 +68,11 @@ $server->on('start', function (Swoole\Server $server) {
 });
 
 
-$server->on('request', function(Swoole\Http\Request $request, Swoole\Http\Response $response)
+$server->on('request', function(Swoole\Http\Request $request, Swoole\Http\Response $response) use ($config)
 {
 
 
-$config = ['userClass' => Employees::class];
+//$config = ['userClass' => Employees::class];
 
 $app = new Application($config, $request, $response);
 

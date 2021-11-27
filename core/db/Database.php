@@ -6,12 +6,12 @@ class Database
 {
   public \PDO $pdo;
 
-  public function __construct()
+  public function __construct($dbConfig)
   {
     //dsn: Domain Service Name
-    $dsn = "mysql:host=localhost;port=3306;dbname=classicmodels";
-    $user = "root";
-    $pass = "certainly";
+    $dsn = $dbConfig['dsn'];
+    $user = $dbConfig['user'];
+    $pass = $dbConfig['pass'];
     
     $this->pdo = new \PDO($dsn, $user, $pass);
     $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);

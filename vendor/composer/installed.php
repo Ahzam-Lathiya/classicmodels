@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'a95e10e530cc3928979f36293a4574df5a7d775b',
+    'reference' => '4558bd01fca5f094a9a6a20531839bf812acfd6f',
     'name' => 'minimal/ahzam',
   ),
   'versions' => 
@@ -20,6 +20,15 @@
       ),
       'reference' => 'd56bf6102915de5702778fe20f2de3b2fe570b5b',
     ),
+    'graham-campbell/result-type' => 
+    array (
+      'pretty_version' => 'v1.0.4',
+      'version' => '1.0.4.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '0690bde05318336c7221785f2a932467f98b64ca',
+    ),
     'minimal/ahzam' => 
     array (
       'pretty_version' => 'dev-main',
@@ -27,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'a95e10e530cc3928979f36293a4574df5a7d775b',
+      'reference' => '4558bd01fca5f094a9a6a20531839bf812acfd6f',
     ),
     'myclabs/deep-copy' => 
     array (
@@ -95,6 +104,15 @@
       array (
       ),
       'reference' => 'a12f7e301eb7258bb68acd89d4aefa05c2906cae',
+    ),
+    'phpoption/phpoption' => 
+    array (
+      'pretty_version' => '1.8.0',
+      'version' => '1.8.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '5455cb38aed4523f99977c4a12ef19da4bfe2a28',
     ),
     'phpspec/prophecy' => 
     array (
@@ -312,6 +330,24 @@
       ),
       'reference' => '46cd95797e9df938fdd2b03693b5fca5e64b01ce',
     ),
+    'symfony/polyfill-mbstring' => 
+    array (
+      'pretty_version' => 'v1.23.1',
+      'version' => '1.23.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9174a3d80210dca8daa7f31fec659150bbeabfc6',
+    ),
+    'symfony/polyfill-php80' => 
+    array (
+      'pretty_version' => 'v1.23.1',
+      'version' => '1.23.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '1100343ed1a92e3a38f9ae122fc0eb21602547be',
+    ),
     'theseer/tokenizer' => 
     array (
       'pretty_version' => '1.2.1',
@@ -320,6 +356,15 @@
       array (
       ),
       'reference' => '34a41e998c2183e22995f158c581e7b5e755ab9e',
+    ),
+    'vlucas/phpdotenv' => 
+    array (
+      'pretty_version' => 'v5.4.0',
+      'version' => '5.4.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd4394d044ed69a8f244f3445bcedf8a0d7fe2403',
     ),
     'webmozart/assert' => 
     array (

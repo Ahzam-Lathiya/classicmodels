@@ -23,7 +23,7 @@ class Application
   public function __construct($config, $swooleRequest, Response $swooleResponse)
   {
     $this->userClass = $config['userClass'];
-    $this->db = new Database();
+    $this->db = new Database($config['DB_CONFIG']);
     $this->request = new Request( $swooleRequest);
     $this->response = $swooleResponse;
     $this->router = new Router($this->request, $this->response);
