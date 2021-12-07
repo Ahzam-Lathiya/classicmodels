@@ -6,22 +6,27 @@
             "email": "ahzam.lathiya@gmail.com"
         }
     ],
+    
     "autoload": {
-      "psr-4": {
-        "app\\" : "./"
-      }
+      "classmap": ["./"]
     },
 
     "require": {
+        "php": ">=7.4",
         "vlucas/phpdotenv": "^5.4"
+    },
+
+    "config": {
+        "optimize-autoloader": true,
+        "classmap-authoritative": true
     },
     
     "autoload-dev": {
-      "psr-4": {
-        "Tests\\" : "tests/"
-      }
+      "classmap": ["tests/"]
     },
+    
     "require-dev": {
+        "php": ">=7.4",
         "phpunit/phpunit": "^9.5"
     }
 }

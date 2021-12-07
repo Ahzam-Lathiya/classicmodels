@@ -86,6 +86,8 @@ class Application
     //init a redis session and dump the user id or object with the session id.
     //set a cookie with the same sess ID with user key.
     
+    //if( $this->session->exists())
+    
     $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     
     //generate a rand
@@ -103,8 +105,7 @@ class Application
 
   public function logout()
   {
-    //$this->session->remove( $this->user->employeeNumber );
-    //$this->session->remove( 'user' );
+    //remove the entire hash of current session ID
     $this->session->destroy();
     $this->user = null;
   }

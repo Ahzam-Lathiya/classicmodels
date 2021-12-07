@@ -11,7 +11,7 @@ use app\core\Application;
 class LoginController extends controller
 {
 
-  public function Login(Request $request, Response $response)
+  public function login(Request $request, Response $response)
   {
     $this->setLayout('auth');
 
@@ -31,8 +31,11 @@ class LoginController extends controller
     
     if( $employee->verifyID( $body['emp_ID'] ) )
     {
+      //if user exists
+      
       if( $employee->verifyPass( $body['emp_ID'], $body['password'] ) )
       {
+        //if user as well as the password exists
         $empData = $employee->getRow( $body['emp_ID'] );
         
         $employee->loadData($empData);

@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '4558bd01fca5f094a9a6a20531839bf812acfd6f',
+    'reference' => '5ed8cd23c71c04e86f0be1f6565ccf0463555b18',
     'name' => 'minimal/ahzam',
   ),
   'versions' => 
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '4558bd01fca5f094a9a6a20531839bf812acfd6f',
+      'reference' => '5ed8cd23c71c04e86f0be1f6565ccf0463555b18',
     ),
     'myclabs/deep-copy' => 
     array (
@@ -53,12 +53,12 @@
     ),
     'nikic/php-parser' => 
     array (
-      'pretty_version' => 'v4.13.0',
-      'version' => '4.13.0.0',
+      'pretty_version' => 'v4.13.1',
+      'version' => '4.13.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '50953a2691a922aa1769461637869a0a2faa3f53',
+      'reference' => '63a79e8daa781cac14e5195e63ed8ae231dd10fd',
     ),
     'phar-io/manifest' => 
     array (
@@ -125,12 +125,12 @@
     ),
     'phpunit/php-code-coverage' => 
     array (
-      'pretty_version' => '9.2.8',
-      'version' => '9.2.8.0',
+      'pretty_version' => '9.2.9',
+      'version' => '9.2.9.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'cf04e88a2e3c56fc1a65488afd493325b4c1bc3e',
+      'reference' => 'f301eb1453c9e7a1bc912ee8b0ea9db22c60223b',
     ),
     'phpunit/php-file-iterator' => 
     array (
@@ -242,12 +242,12 @@
     ),
     'sebastian/exporter' => 
     array (
-      'pretty_version' => '4.0.3',
-      'version' => '4.0.3.0',
+      'pretty_version' => '4.0.4',
+      'version' => '4.0.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd89cc98761b8cb5a1a235a6b703ae50d34080e65',
+      'reference' => '65e8b7db476c5dd267e65eea9cab77584d3cfff9',
     ),
     'sebastian/global-state' => 
     array (
