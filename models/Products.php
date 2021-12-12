@@ -16,6 +16,8 @@ class Products extends Model
   public int $quantityInStock = 0;
   public float $buyPrice = 0.0;
   public float $MSRP = 0.0;
+  
+  public int $pagRecords = 50;
 
   public function tableName(): string
   {
@@ -36,6 +38,24 @@ class Products extends Model
     $statement = Application::$app->db->prepare("SELECT productCode, productName, productLine, productScale, productVendor, quantityInStock, buyPrice, MSRP FROM $tableName ORDER BY LENGTH($primaryKey), $primaryKey ASC;");
     
     $statement->execute();
+    return $statement->fetchAll( \PDO::FETCH_ASSOC );
+  }
+  
+  
+  public function fetchPaginatedRecords($offset)
+  {
+    $tableName = $this->tableName();
+    $primaryKey = $this->primaryKey();
+    
+    $numRecords = $this->pagRecords;
+    
+    //calculate offset on basis of page number and number of records(50 in this case) to be returned
+    $offset = ($offset - 1) * $numRecords;
+    
+    $statement = Application::$app->db->prepare("SELECT productCode, productName, productLine, productScale, productVendor, quantityInStock, buyPrice, MSRP FROM $tableName ORDER BY LENGTH($primaryKey), $primaryKey ASC LIMIT $offset, $numRecords");
+    
+    $statement->execute();
+    
     return $statement->fetchAll( \PDO::FETCH_ASSOC );
   }
   

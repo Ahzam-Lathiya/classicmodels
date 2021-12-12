@@ -7,6 +7,7 @@ use app\core\Controller;
 use Swoole\Http\Response;
 use app\core\Request;
 use app\core\Application;
+use app\core\exceptions\ForbiddenException;
 
 class LoginController extends controller
 {
@@ -23,11 +24,18 @@ class LoginController extends controller
   //POST request
   public function handleLoginform(Request $request, Response $response)
   {
-    $employee = new Employees();
-
     $this->setLayout('auth');
 
+    $employee = new Employees();
+
     $body = $request->getRequestBody();
+
+    // check if user ID already exists in session
+    if( Application::$app->session->userExists( $body['emp_ID' ]) !== [] )
+    {
+      throw new ForbiddenException();
+    }
+    
     
     if( $employee->verifyID( $body['emp_ID'] ) )
     {

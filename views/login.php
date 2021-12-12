@@ -29,6 +29,7 @@ async function submitForm(data)
   let yurl = new URL('http://127.0.0.1:8000/login');
 
   let statusMessages = {401: 'Password incorrect for user',
+                        403: 'This ID is already logged in another session',
                         404: 'User ID doesn\'t exist'
                        };
 
@@ -40,6 +41,8 @@ async function submitForm(data)
                             
   let response = await promise.json();
   
+  //if no exception is raised in promise
+  
   if(promise.ok)
   {
     return response;
@@ -50,7 +53,7 @@ async function submitForm(data)
     let message = statusMessages[promise.status];
     throw new Error(message);
   }
-  
+
 }
 
 

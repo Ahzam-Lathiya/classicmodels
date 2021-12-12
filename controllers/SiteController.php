@@ -35,6 +35,14 @@ class SiteController extends Controller
     $response->header('Content-Type', 'text/html');
     return $response->end( $this->render('about') );
   }
+  
+  public function allSessions(Request $request, Response $response)
+  {
+    $answer = Application::$app->session->userExists('1088');
+  
+    $response->header('Content-Type', 'application/json');
+    return $response->end( json_encode($answer) );
+  }
 
 
   public function stuck(Request $request, Response $response)

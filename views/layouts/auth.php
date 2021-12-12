@@ -49,7 +49,7 @@ use app\core\Application;
         </li>
         
         <li class="nav-item">
-          <a class="nav-link" href="/products">Products</a>
+          <a class="nav-link" href="/products?page=1">Products</a>
         </li>
 
         <li class="nav-item">

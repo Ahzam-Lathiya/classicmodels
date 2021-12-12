@@ -81,11 +81,34 @@ class Request
   }
   
   
+  public function getURLParams()
+  {
+    $queryString = $this->swooleRequest->server['query_string'] ?? '';
+    
+    $allParams = [];
+    
+    if($queryString != '')
+    {
+      $params = explode("&", $queryString);
+      
+      foreach($params as $param)
+      {
+        $key = explode("=", $param)[0];
+        $value = explode("=", $param)[1];
+
+        $allParams[$key] = $value;
+      }
+
+    }
+    
+    return $allParams;
+  }
+  
+  
   public function getMethod()
   {
     //return $_SERVER['REQUEST_METHOD'];
     return $this->swooleRequest->server['request_method'] ?? '/';
-
   }
   
   

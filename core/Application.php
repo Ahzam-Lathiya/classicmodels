@@ -5,6 +5,7 @@ namespace app\core;
 use app\core\db\Database;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as Response;
+use app\core\exceptions\ForbiddenException;
 
 class Application
 {
@@ -30,16 +31,6 @@ class Application
     $this->view = new View();
     $this->session = new SessionManager();
     self::$app = $this;
-    
-    
-    //$primaryValue = $this->session->get('user');
-    //use session ID instead of 'user'
-    
-    /*
-    $primaryValue = $this->session->get('user');
-    
-    //if primary value exists then it means the visitor is logged in
-    if($primaryValue)*/
     
     $sessID = $this->request->swooleRequest->cookie['userSess'];
     
@@ -86,8 +77,6 @@ class Application
     //init a redis session and dump the user id or object with the session id.
     //set a cookie with the same sess ID with user key.
     
-    //if( $this->session->exists())
-    
     $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     
     //generate a rand
@@ -119,12 +108,19 @@ class Application
 
   public function run()
   {
-    
     try
     {
       return $this->router->resolve();
     }
-
+    
+    catch(ForbiddenException $e)
+    {
+      $this->response->setStatusCode($e->getCode() );
+      
+      $message = $e->getMessage();
+      return $this->response->end( json_encode(['message' => $message]) );
+    }
+    
     catch(\Exception $e)
     {
       $this->response->setStatusCode($e->getCode());

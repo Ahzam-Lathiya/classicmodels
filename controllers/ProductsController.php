@@ -22,25 +22,27 @@ class ProductsController extends Controller
       throw new ForbiddenException;
     }
     
-    $products = new Products();
-
     $this->setLayout('main');
     
-    if( !Application::$app->session->get('products') )
-    {
-      Application::$app->session->set('products', $products->fetchAllRecords() );
-    }
-
-    //$allProducts = $products->fetchAllRecords();
+    $allParams = Application::$app->request->getURLParams();
     
-    $count = count(Application::$app->session->get('products') );
-    //$count = count($allProducts );
+    $page = $allParams['page'];
+    
+    $products = new Products();
+    
+    if( !Application::$app->session->get('products' . $page) )
+    {
+      Application::$app->session->set('products' . $page, $products->fetchPaginatedRecords($page) );
+    }
+    
+    $count = count(Application::$app->session->get('products' . $page) );
     
     $response->header('Content-Type', 'text/html');
     $response->setStatusCode(200);
     return $response->end( $this->render('products', [
-                                      'allProducts' => Application::$app->session->get('products'),
-                                      'count' => $count, ]) );
+                                      'allProducts' => Application::$app->session->get('products' . $page),
+                                      'count' => $count ]) );
+    
   }
 
   

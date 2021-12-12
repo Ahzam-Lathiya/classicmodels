@@ -15,25 +15,14 @@ class SessionManager
 
 
   public function get($key)
-  {
-    /*
-    $key = "PHPREDIS_SESSION:" . $this->sessionID . ":" . $key;
-    return unserialize($this->redis->get($key) );
-    */
-    
+  { 
     $index = "PHPREDIS_SESSION:" . $this->sessionID;
     return unserialize($this->redis->hGet($index, $key) );
   }
 
 
   public function set($key,$data)
-  {
-    /*
-    $key = "PHPREDIS_SESSION:" . $this->sessionID . ":" . $key;
-    $data = serialize($data);
-    $this->redis->set($key, $data);
-    */
-    
+  {    
     $index = "PHPREDIS_SESSION:" . $this->sessionID;
     $data = serialize($data);
     $this->redis->hSet($index, $key, $data);
@@ -41,12 +30,7 @@ class SessionManager
 
 
   public function remove($key)
-  {
-    /*
-    $key = "PHPREDIS_SESSION:" . $this->sessionID . ":" . $key;
-    $this->redis->delete($key);
-    */
-    
+  { 
     $index = "PHPREDIS_SESSION:" . $this->sessionID;
     $this->redis->hDel($index, $key);
   }
@@ -54,7 +38,6 @@ class SessionManager
   
   public function destroy()
   {
-    //$this->redis->flushDb();
     $index = "PHPREDIS_SESSION:" . $this->sessionID;
     $this->redis->del($index);
   }
@@ -73,20 +56,32 @@ class SessionManager
   
   
   public function sessionExists($sessID)
-  {
-    /*
-    $key = "PHPREDIS_SESSION:" . $sessID . ":" . "user";
-    return $this->redis->exists($key);
-    */
-    
+  { 
     $index = "PHPREDIS_SESSION:" . $sessID;
     return $this->redis->hExists($index, "user");
-    
   }
   
-  public function keyExists($key)
+  //checks if user is already logged in from different system
+  public function userExists($key)
   {
-    //retrieve all sessionKeys and search all 'user' sub-keys 
+    $answer = [];
+    
+    //retrieve all sessionKeys and search all 'user' sub-keys
+    $allSessions = $this->redis->keys("*");
+    
+    //loop through the keys searching for the userid
+    foreach($allSessions as $session)
+    {
+      //if exists return the user ID along with the session in which it exists
+      
+      if( unserialize( $this->redis->hGet($session, "user") ) == $key)
+      {
+        $answer[] = [$session => $key];
+        break;
+      }
+    }
+    
+    return $answer;
   }
 
 }
