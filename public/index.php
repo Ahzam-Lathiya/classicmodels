@@ -79,6 +79,7 @@ $app = new Application($config, $request, $response);
 //incoming requests
 $app->router->routes['GET']['/'] = [SiteController::class, 'home'];
 $app->router->routes['GET']['/about'] = [SiteController::class, 'about'];
+$app->router->routes['GET']['/sessions'] = [SiteController::class, 'allSessions'];
 
 $app->router->routes['GET']['/orders'] = [OrdersController::class, 'getOrders'];
 $app->router->routes['GET']["/orders/order"] = [OrdersController::class, 'getOrder'];
