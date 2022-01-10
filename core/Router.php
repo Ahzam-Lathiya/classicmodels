@@ -12,11 +12,19 @@ class Router
   public Request $request;
   public Response $response;
   
-  public function __construct(Request $request, Response $response)
+  public function __construct()
   {
-    $this->request = $request;
-    $this->response = $response;
+    //$this->request = $request;
+    //$this->response = $response;
   }
+  
+  
+  public function setReqResp($swooleRequest, Response $swooleResponse)
+  {
+    $this->request = $swooleRequest;
+    $this->response = $swooleResponse;
+  }
+
 
   public function resolve()
   {
@@ -33,13 +41,13 @@ class Router
     $callback = $this->routes[$method][$path] ?? false;
 
     $controller = new $callback[0]();
-        
+    
     //set the controller according to the request through the app
     Application::$app->setController($controller);
-        
+    
     return call_user_func( array($controller, $callback[1]), $this->request, $this->response );
 
-    /*    
+    /*
     if($callback === false)
     {
       throw new NotFoundException();

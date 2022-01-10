@@ -20,33 +20,19 @@ class Application
   public View $view;
   public SessionManager $session;
   public ?UserModel $user;
+  public array $globalConfig;
 
-  public function __construct($config, $swooleRequest, Response $swooleResponse)
+  public function __construct($config)
   {
     $this->userClass = $config['userClass'];
     $this->db = new Database($config['DB_CONFIG']);
-    $this->request = new Request( $swooleRequest);
-    $this->response = $swooleResponse;
-    $this->router = new Router($this->request, $this->response);
+
+    //router is initialized here because all the routes have to be registered against the router in the bootstrapping phase
+    $this->router = new Router();
     $this->view = new View();
-    $this->session = new SessionManager();
+    
+    $this->globalConfig = $config;
     self::$app = $this;
-    
-    $sessID = $this->request->swooleRequest->cookie['userSess'];
-    
-    if($this->session->sessionExists($sessID) >= 1)
-    {
-      $this->session->sessionID = $sessID;
-      $primaryValue = $this->session->get('user');
-      $primaryKey = (new $this->userClass() )->primaryKey();
-      $this->user = (new $this->userClass() )->findOne( [$primaryKey => $primaryValue] );
-    }
-    
-    
-    else
-    {
-      $this->user = null;
-    }
     
     /*
     $this->user = (new $this->userClass() );
@@ -77,7 +63,7 @@ class Application
     //init a redis session and dump the user id or object with the session id.
     //set a cookie with the same sess ID with user key.
     
-    $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $permitted_chars = $this->globalConfig['permit_chars'];
     
     //generate a rand
     $rand = substr(str_shuffle($permitted_chars), 0, 20);
@@ -106,13 +92,44 @@ class Application
   }
 
 
-  public function run()
+  public function run($swooleRequest, Response $swooleResponse)
   {
     try
     {
+      $sessID = '';
+      
+      $this->session = new SessionManager();
+    
+      $this->request = new Request($swooleRequest);
+      $this->response = $swooleResponse;
+      
+      $this->router->setReqResp($this->request, $this->response);
+      
+
+      if( $this->request->swooleRequest->cookie )
+      {
+        $sessID = $this->request->swooleRequest->cookie['userSess'];
+      }
+      
+          
+      if($this->session->sessionExists($sessID) >= 1)
+      {
+        $this->session->sessionID = $sessID;
+        $primaryValue = $this->session->get('user');
+        $primaryKey = (new $this->userClass() )->primaryKey();
+        $this->user = (new $this->userClass() )->findOne( [$primaryKey => $primaryValue] );
+      }
+    
+    
+      else
+      {
+        $this->user = null;
+      }
+    
       return $this->router->resolve();
     }
     
+    /*
     catch(ForbiddenException $e)
     {
       $this->response->setStatusCode($e->getCode() );
@@ -120,6 +137,7 @@ class Application
       $message = $e->getMessage();
       return $this->response->end( json_encode(['message' => $message]) );
     }
+    */
     
     catch(\Exception $e)
     {

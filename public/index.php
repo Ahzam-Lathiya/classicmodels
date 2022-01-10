@@ -31,7 +31,8 @@ $config = [
               'dsn' => $_ENV['DB_DSN'],
               'user' => $_ENV['DB_USER'],
               'pass' => $_ENV['DB_PASS']
-            ]
+            ],
+            'permit_chars' => $_ENV['permit_chars']
           ];
 
 $server = new HttpServer('127.0.0.1', 8000, SWOOLE_PROCESS, SWOOLE_SOCK_TCP);
@@ -43,38 +44,8 @@ $server->set([
     //'backlog' => 128,       // TCP backlog connection number
     'enable_coroutine' => true
 ]);
-/*
-$server->on("WorkerStart", function(Swoole\Server $server,int $workerId) {
 
-    global $argv;
-
-    if($workerId >= $server->setting['worker_num'])
-    {
-      swoole_set_process_name("php {$argv[0]} task worker");
-      echo "php {$argv[0]} task worker with ID:$workerId" . PHP_EOL;
-    }
-    
-    else
-    {
-      swoole_set_process_name("php {$argv[0]} event worker");
-      echo "php {$argv[0]} task worker with ID:$workerId" . PHP_EOL;
-    }
-});
-*/
-
-$server->on('start', function (Swoole\Server $server) {
-  //only limited logic should be executed here, such as logging, recording and modifying the name of process, getting the process ID etc
-    echo "Server started at http://127.0.0.1:8000\n";
-});
-
-
-$server->on('request', function(Swoole\Http\Request $request, Swoole\Http\Response $response) use ($config)
-{
-
-
-//$config = ['userClass' => Employees::class];
-
-$app = new Application($config, $request, $response);
+$app = new Application($config);
 
 //incoming requests
 $app->router->routes['GET']['/'] = [SiteController::class, 'home'];
@@ -112,7 +83,41 @@ $app->router->routes['POST']['/addUser'] = [ProfileController::class, 'createUse
 
 $app->router->routes['GET']['/secret1'] = [SecretController::class, 'accessSecret1'];
 
-  $app->run();
+echo "This code runs every time" . "\n";
+
+/*
+$server->on("WorkerStart", function(Swoole\Server $server,int $workerId) {
+
+    global $argv;
+
+    if($workerId >= $server->setting['worker_num'])
+    {
+      swoole_set_process_name("php {$argv[0]} task worker");
+      echo "php {$argv[0]} task worker with ID:$workerId" . PHP_EOL;
+    }
+    
+    else
+    {
+      swoole_set_process_name("php {$argv[0]} event worker");
+      echo "php {$argv[0]} task worker with ID:$workerId" . PHP_EOL;
+    }
+});
+*/
+
+$server->on('start', function (Swoole\Server $server)
+{
+  //only limited logic should be executed here, such as logging, recording and modifying the name of process, getting the process ID etc
+    
+    echo "Server started at http://127.0.0.1:8000\n";
+});
+
+
+$server->on('request', function(Swoole\Http\Request $request, Swoole\Http\Response $response) use ($app)
+{
+
+//$config = ['userClass' => Employees::class];
+
+  $app->run($request, $response);
 
 });
 /*
