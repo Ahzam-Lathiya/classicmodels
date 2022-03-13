@@ -6,7 +6,7 @@ use Swoole\Http\Request as SwooleRequest;
 
 class Request
 {
-  public SwooleRequest $swooleRequest;
+  public ?SwooleRequest $swooleRequest = null;
 
   public function __construct(SwooleRequest $request)
   {
@@ -127,6 +127,13 @@ class Request
   public function getRequestBody()
   {
     return $this->swooleRequest->post;
+  }
+
+  public function getSiteNameFromPath()
+  {
+    $url = $this->swooleRequest->server['request_uri'] ?? '/';
+    
+    return explode('/', $url)[1];
   }
 
 }

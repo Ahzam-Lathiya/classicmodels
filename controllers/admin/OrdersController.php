@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace app\controllers\admin;
 
 use app\core\Controller;
 use app\core\Application;
@@ -93,7 +93,7 @@ class OrdersController extends Controller
     
     //$allOrd = $orders->fetchAllRecords();
     
-    echo $allOrd . PHP_EOL;
+    //echo $allOrd . PHP_EOL;
     
     $count = count($allOrd );
     //$count = count($allOrd);

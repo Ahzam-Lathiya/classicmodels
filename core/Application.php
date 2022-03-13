@@ -13,25 +13,28 @@ class Application
   public Request $request;
   public Response $response;
   public Database $db;
-  public string $userClass;
+  public string $userClass = '';
   public ?Controller $controller = null;
   public static Application $app;
   public string $layout = 'main';
   public View $view;
   public SessionManager $session;
   public ?UserModel $user;
-  public array $globalConfig;
+  public array $globalConfig = [];
+  public Container $container;
 
-  public function __construct($config)
+  public function __construct(array $globalConfig)
   {
-    $this->userClass = $config['userClass'];
-    $this->db = new Database($config['DB_CONFIG']);
+    $this->container = new Container();
+    
+    $this->userClass = $globalConfig['user_class'];
+    $this->db = new Database($globalConfig['DB_CONFIG']);
 
     //router is initialized here because all the routes have to be registered against the router in the bootstrapping phase
     $this->router = new Router();
     $this->view = new View();
     
-    $this->globalConfig = $config;
+    $this->globalConfig = $globalConfig;
     self::$app = $this;
     
     /*
@@ -68,7 +71,7 @@ class Application
     //generate a rand
     $rand = substr(str_shuffle($permitted_chars), 0, 20);
     
-    $this->session->setSession($rand);
+    $this->session->setSessionID($rand);
     
     // $_SESSION['user'] = 1088;
     $this->session->set('user', $primaryValue);
@@ -99,7 +102,7 @@ class Application
       $sessID = '';
       
       $this->session = new SessionManager();
-    
+
       $this->request = new Request($swooleRequest);
       $this->response = $swooleResponse;
       
@@ -111,7 +114,7 @@ class Application
         $sessID = $this->request->swooleRequest->cookie['userSess'];
       }
       
-          
+      
       if($this->session->sessionExists($sessID) >= 1)
       {
         $this->session->sessionID = $sessID;

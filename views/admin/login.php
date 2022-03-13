@@ -26,14 +26,14 @@ $this->title = 'Login';
 
 async function submitForm(data)
 {
-  let yurl = new URL('http://127.0.0.1:8000/login');
+  let url = new URL('http://127.0.0.1:8000/admin/login');
 
   let statusMessages = {401: 'Password incorrect for user',
                         403: 'This ID is already logged in another session',
                         404: 'User ID doesn\'t exist'
                        };
 
-  let promise = await fetch(yurl,
+  let promise = await fetch(url,
                             {
                               method: 'POST',
                               body: data,
@@ -79,9 +79,11 @@ form.addEventListener('submit', function(){
   submitForm(payload).then( data => {
     console.log(data);
     
+    //display message
     document.querySelector('.messageArea').innerText = data['message'];
     
-    location.href = '/';
+    //redirect to the home page "Admin"
+    location.href = '/admin';
     
   }).catch( error => {
       console.log(error);

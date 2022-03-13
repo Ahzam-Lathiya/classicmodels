@@ -3,20 +3,28 @@
 require_once "../vendor/autoload.php";
 
 
-use app\controllers\SiteController;
-use app\controllers\LoginController;
-use app\controllers\OrdersController;
-use app\controllers\ProductLinesController;
-use app\controllers\ProductsController;
-use app\controllers\CustomersController;
-use app\controllers\ProfileController;
-use app\controllers\SecretController;
+use app\controllers\admin\SiteController;
+use app\controllers\admin\LoginController;
+use app\controllers\admin\OrdersController;
+use app\controllers\admin\ProductLinesController;
+use app\controllers\admin\ProductsController;
+use app\controllers\admin\CustomersController;
+use app\controllers\admin\ProfileController;
+use app\controllers\admin\SecretController;
+
+use app\controllers\site\SiteProductsController;
 
 use app\models\Employees;
 
 use app\core\Application;
+use app\core\Container;
 use Swoole\Coroutine;
 use Swoole\HTTP\Server as HttpServer;
+use Swoole\Runtime;
+
+ini_set('session.save_handler', 'redis');
+ini_set('session.save_path', 'tcp://localhost:6379');
+ini_set('session.serialize_handler', 'php_serialize');
 
 Swoole\Runtime::enableCoroutine(SWOOLE_HOOK_ALL);
 
@@ -24,8 +32,8 @@ Swoole\Runtime::enableCoroutine(SWOOLE_HOOK_ALL);
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
-$config = [
-           'userClass' => Employees::class,
+$globalConfig = [
+           'user_class' => Employees::class,
            'DB_CONFIG' => 
             [
               'dsn' => $_ENV['DB_DSN'],
@@ -39,51 +47,58 @@ $server = new HttpServer('127.0.0.1', 8000, SWOOLE_PROCESS, SWOOLE_SOCK_TCP);
 
 
 $server->set([
-    'worker_num' => 4,      // The number of worker processes to start
+    //'worker_num' => 4,      // The number of worker processes to start
     //'task_worker_num' => 4,  // The amount of task workers to start
     //'backlog' => 128,       // TCP backlog connection number
     'enable_coroutine' => true
 ]);
 
-$app = new Application($config);
+
+//$container = new Container();
+//$container->setArray('globalConfig', $globalConfig);
+
+//$app = $container->get(Application::class);
+$app = new Application($globalConfig);
 
 //incoming requests
-$app->router->routes['GET']['/'] = [SiteController::class, 'home'];
-$app->router->routes['GET']['/about'] = [SiteController::class, 'about'];
-$app->router->routes['GET']['/sessions'] = [SiteController::class, 'allSessions'];
+$app->router->routes['GET']['/admin'] = [SiteController::class, 'home'];
+$app->router->routes['GET']['/admin/about'] = [SiteController::class, 'about'];
+$app->router->routes['GET']['/admin/sessions'] = [SiteController::class, 'allSessions'];
 
-$app->router->routes['GET']['/orders'] = [OrdersController::class, 'getOrders'];
-$app->router->routes['GET']["/orders/order"] = [OrdersController::class, 'getOrder'];
-$app->router->routes['POST']['/getStatus'] = [OrdersController::class, 'filterByStatus'];
+$app->router->routes['GET']['/admin/orders'] = [OrdersController::class, 'getOrders'];
+$app->router->routes['GET']["/admin/orders/order"] = [OrdersController::class, 'getOrder'];
+$app->router->routes['POST']['/admin/getStatus'] = [OrdersController::class, 'filterByStatus'];
 
-$app->router->routes['GET']['/products'] = [ProductsController::class, 'getProducts'];
-$app->router->routes['GET']['/products/getProductNames'] = [ProductsController::class, 'fetchAllNames'];
-$app->router->routes['GET']["/products/product"] = [ProductsController::class, 'getProduct'];
-$app->router->routes['GET']["/products/addProduct"] = [ProductsController::class, 'createProductForm'];
-$app->router->routes['GET']["/products/editProduct"] = [ProductsController::class, 'editProductForm'];
-$app->router->routes['POST']["/products/editProduct"] = [ProductsController::class, 'editProduct'];
-$app->router->routes['POST']["/products/addProduct"] = [ProductsController::class, 'createProduct'];
-$app->router->routes['GET']['/pusher'] = [ProductsController::class, 'serverPush'];
+$app->router->routes['GET']['/admin/products'] = [ProductsController::class, 'getProducts'];
+$app->router->routes['GET']['/admin/products/getProductNames'] = [ProductsController::class, 'fetchAllNames'];
+$app->router->routes['GET']["/admin/products/product"] = [ProductsController::class, 'getProduct'];
+$app->router->routes['GET']["/admin/products/addProduct"] = [ProductsController::class, 'createProductForm'];
+$app->router->routes['GET']["/admin/products/editProduct"] = [ProductsController::class, 'editProductForm'];
+$app->router->routes['POST']["/admin/products/editProduct"] = [ProductsController::class, 'editProduct'];
+$app->router->routes['POST']["/admin/products/addProduct"] = [ProductsController::class, 'createProduct'];
+$app->router->routes['GET']['/admin/pusher'] = [ProductsController::class, 'serverPush'];
 
-$app->router->routes['GET']["/productLines/addProductLine"] = [ProductLinesController::class, 'productLineForm'];
-$app->router->routes['POST']["/productLines/createProductLine"] = [ProductLinesController::class, 'createProductLine'];
-$app->router->routes['GET']['/productLines'] = [ProductLinesController::class, 'getProductlines'];
+$app->router->routes['GET']["/admin/productLines/addProductLine"] = [ProductLinesController::class, 'productLineForm'];
+$app->router->routes['POST']["/admin/productLines/createProductLine"] = [ProductLinesController::class, 'createProductLine'];
+$app->router->routes['GET']['/admin/productLines'] = [ProductLinesController::class, 'getProductlines'];
 
-$app->router->routes['GET']['/customers'] = [CustomersController::class, 'getCustomers'];
-$app->router->routes['GET']['/customers/customer'] = [CustomersController::class, 'getCustomer'];
+$app->router->routes['GET']['/admin/customers'] = [CustomersController::class, 'getCustomers'];
+$app->router->routes['GET']['/admin/customers/customer'] = [CustomersController::class, 'getCustomer'];
 
-$app->router->routes['GET']['/login'] = [LoginController::class, 'login'];
-$app->router->routes['POST']['/login'] = [LoginController::class, 'handleLoginform'];
-$app->router->routes['GET']['/logout'] = [LoginController::class, 'handleLogout'];
+$app->router->routes['GET']['/admin/login'] = [LoginController::class, 'login'];
+$app->router->routes['POST']['/admin/login'] = [LoginController::class, 'handleLoginform'];
+$app->router->routes['GET']['/admin/logout'] = [LoginController::class, 'handleLogout'];
 
-$app->router->routes['GET']['/profile'] = [ProfileController::class, 'showProfile'];
-$app->router->routes['POST']['/editPass'] = [ProfileController::class, 'editPassword'];
-$app->router->routes['GET']['/addUser'] = [ProfileController::class, 'registerPage'];
-$app->router->routes['POST']['/addUser'] = [ProfileController::class, 'createUser'];
+$app->router->routes['GET']['/admin/profile'] = [ProfileController::class, 'showProfile'];
+$app->router->routes['POST']['/admin/editPass'] = [ProfileController::class, 'editPassword'];
+$app->router->routes['GET']['/admin/addUser'] = [ProfileController::class, 'registerPage'];
+$app->router->routes['POST']['/admin/addUser'] = [ProfileController::class, 'createUser'];
 
-$app->router->routes['GET']['/secret1'] = [SecretController::class, 'accessSecret1'];
+$app->router->routes['GET']['/admin/secret1'] = [SecretController::class, 'accessSecret1'];
 
-echo "This code runs every time" . "\n";
+$app->router->routes['GET']['/site/products'] = [SiteProductsController::class, 'getProducts'];
+
+echo "This code runs once when the server starts" . "\n";
 
 /*
 $server->on("WorkerStart", function(Swoole\Server $server,int $workerId) {
@@ -115,11 +130,10 @@ $server->on('start', function (Swoole\Server $server)
 $server->on('request', function(Swoole\Http\Request $request, Swoole\Http\Response $response) use ($app)
 {
 
-//$config = ['userClass' => Employees::class];
-
   $app->run($request, $response);
 
 });
+
 /*
 $server->on("Shutdown", function(Swoole\Server $server, int $workerId) {
 

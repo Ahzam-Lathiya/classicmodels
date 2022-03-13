@@ -43,7 +43,7 @@ class SessionManager
   }
 
 
-  public function setSession($id)
+  public function setSessionID($id)
   {
     $this->sessionID = $id;
   }

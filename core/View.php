@@ -24,10 +24,13 @@ class View
     {
       $$key = $value;
     }
+
+    $siteName = Application::$app->request->getSiteNameFromPath();
   
     ob_start();
     
-    require_once "../views/$view.php";
+    require_once "../views/$siteName/$view.php";
+    //require_once "../views/$view.php";
     
     return ob_get_clean();
   }

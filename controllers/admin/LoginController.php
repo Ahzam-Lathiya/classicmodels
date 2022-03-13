@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace app\controllers\admin;
 
 use app\models\Employees;
 use app\core\Controller;
@@ -80,7 +80,7 @@ class LoginController extends controller
   {
     Application::$app->logout();
 
-    $response->redirect("/");
+    $response->redirect("/admin");
   }
 }
 

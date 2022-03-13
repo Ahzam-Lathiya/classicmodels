@@ -29,11 +29,11 @@ use app\core\Application;
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
         <li class="nav-item">
-          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/admin">Home</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="/about">About</a>
+          <a class="nav-link" href="/admin/about">About</a>
         </li>
 
         <?php 
@@ -42,23 +42,23 @@ use app\core\Application;
         ?>  
         
         <li class="nav-item">
-          <a class="nav-link" href="/secret1">Secret1</a>
+          <a class="nav-link" href="/admin/secret1">Secret1</a>
         </li>
         
         <li class="nav-item">
-          <a class="nav-link" href="/orders">Orders</a>
+          <a class="nav-link" href="/admin/orders">Orders</a>
         </li>
         
         <li class="nav-item">
-          <a class="nav-link" href="/products?page=1">Products</a>
+          <a class="nav-link" href="/admin/products?page=1">Products</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="/customers">Customers</a>
+          <a class="nav-link" href="/admin/customers">Customers</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="/productLines">Product Lines</a>
+          <a class="nav-link" href="/admin/productLines">Product Lines</a>
         </li>
 
 
@@ -74,22 +74,22 @@ use app\core\Application;
         ?>  
         
         <li class="nav-item">
-          <a class="nav-link" href="/login">Login</a>
+          <a class="nav-link" href="/admin/login">Login</a>
         </li>
         
         
         <?php else: ?>
 
         <li class="nav-item">
-          <a class="nav-link" href="/addUser">Add User</a>
+          <a class="nav-link" href="/admin/addUser">Add User</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="/profile"><?php echo Application::$app->user->getFullName(); ?></a>
+          <a class="nav-link" href="/admin/profile"><?php echo Application::$app->user->getFullName(); ?></a>
         </li>        
 
         <li class="nav-item">
-          <a class="nav-link" href="/logout">Logout</a>
+          <a class="nav-link" href="/admin/logout">Logout</a>
         </li>
         <?php endif; ?>
 

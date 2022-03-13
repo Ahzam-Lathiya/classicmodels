@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace app\controllers\site;
 
 use app\core\Controller;
 use app\core\Application;
@@ -12,15 +12,17 @@ use app\core\Request;
 use app\core\exceptions\ForbiddenException;
 use Swoole\Http\Response;
 
-class ProductsController extends Controller
+class SiteProductsController extends Controller
 {
 
   public function getProducts(Request $request, Response $response)
   {
+    /*
     if( Application::isGuest() )
     {
       throw new ForbiddenException;
     }
+    */
     
     $this->setLayout('main');
     
@@ -39,7 +41,8 @@ class ProductsController extends Controller
     
     $response->header('Content-Type', 'text/html');
     $response->setStatusCode(200);
-    return $response->end( $this->render('products', [
+    
+    return $response->end( $this->render('siteProducts', [
                                       'allProducts' => Application::$app->session->get('products' . $page),
                                       'count' => $count ]) );
     
