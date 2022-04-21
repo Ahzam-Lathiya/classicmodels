@@ -12,6 +12,7 @@ use app\controllers\admin\CustomersController;
 use app\controllers\admin\ProfileController;
 use app\controllers\admin\SecretController;
 
+use app\controllers\site\SiteCartController;
 use app\controllers\site\SiteProductsController;
 
 use app\models\Employees;
@@ -22,6 +23,7 @@ use Swoole\Coroutine;
 use Swoole\HTTP\Server as HttpServer;
 use Swoole\Runtime;
 
+// php.ini configuration
 ini_set('session.save_handler', 'redis');
 ini_set('session.save_path', 'tcp://localhost:6379');
 ini_set('session.serialize_handler', 'php_serialize');
@@ -65,8 +67,8 @@ $app->router->routes['GET']['/admin'] = [SiteController::class, 'home'];
 $app->router->routes['GET']['/admin/about'] = [SiteController::class, 'about'];
 $app->router->routes['GET']['/admin/sessions'] = [SiteController::class, 'allSessions'];
 
-$app->router->routes['GET']['/admin/orders'] = [OrdersController::class, 'getOrders'];
 $app->router->routes['GET']["/admin/orders/order"] = [OrdersController::class, 'getOrder'];
+$app->router->routes['GET']['/admin/orders'] = [OrdersController::class, 'getOrders'];
 $app->router->routes['POST']['/admin/getStatus'] = [OrdersController::class, 'filterByStatus'];
 
 $app->router->routes['GET']['/admin/products'] = [ProductsController::class, 'getProducts'];
@@ -97,6 +99,8 @@ $app->router->routes['POST']['/admin/addUser'] = [ProfileController::class, 'cre
 $app->router->routes['GET']['/admin/secret1'] = [SecretController::class, 'accessSecret1'];
 
 $app->router->routes['GET']['/site/products'] = [SiteProductsController::class, 'getProducts'];
+
+$app->router->routes['POST']['/site/submitCart'] = [SiteCartController::class, 'submitCartData'];
 
 echo "This code runs once when the server starts" . "\n";
 

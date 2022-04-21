@@ -8,32 +8,33 @@ use Swoole\Http\Response;
 use app\core\Request;
 use app\core\Application;
 use app\core\exceptions\ForbiddenException;
+use app\core\exceptions\JsonException;
 
 class LoginController extends controller
 {
 
-  public function login(Request $request, Response $response)
+  public function login()
   {
     $this->setLayout('auth');
 
-    $response->setStatusCode(200);
-    $response->header('Content-Type', 'text/html');
-    return $response->end( $this->render('login') );
+    $this->response->setStatusCode(200);
+    $this->response->header('Content-Type', 'text/html');
+    return $this->response->end( $this->render('login') );
   }
 
   //POST request
-  public function handleLoginform(Request $request, Response $response)
+  public function handleLoginform()
   {
     $this->setLayout('auth');
 
     $employee = new Employees();
 
-    $body = $request->getRequestBody();
+    $body = $this->request->getRequestBody();
 
     // check if user ID already exists in session
     if( Application::$app->session->userExists( $body['emp_ID' ]) !== [] )
     {
-      throw new ForbiddenException();
+      throw new JsonException();
     }
     
     
@@ -50,37 +51,37 @@ class LoginController extends controller
         
         if(Application::$app->login($employee))
         {
-          $response->setStatusCode(200);
-          $response->header('Content-Type', 'Application/json');
-          return $response->end( json_encode(['message' => 'Successfully Logged In.']) );
+          $this->response->setStatusCode(200);
+          $this->response->header('Content-Type', 'Application/json');
+          return $this->response->end( json_encode(['message' => 'Successfully Logged In.']) );
         }
         
-        //$response->redirect("/");
+        //$this->response->redirect("/");
       }
       
       else
       {
-        $response->setStatusCode(401);
-        $response->header('Content-Type', 'Application/json');
-        return $response->end( json_encode(['message' => 'Incorrect Password for User ID']) );
+        $this->response->setStatusCode(401);
+        $this->response->header('Content-Type', 'Application/json');
+        return $this->response->end( json_encode(['message' => 'Incorrect Password for User ID']) );
       }
       
     }
     
     else
     {
-      $response->setStatusCode(404);
-      $response->header('Content-Type', 'Application/json');
-      return $response->end( json_encode(['message' => 'User ID does not exist']) );
+      $this->response->setStatusCode(404);
+      $this->response->header('Content-Type', 'Application/json');
+      return $this->response->end( json_encode(['message' => 'User ID does not exist']) );
     }
 
   }
   
-  public function handleLogout(Request $request, Response $response)
+  public function handleLogout()
   {
     Application::$app->logout();
 
-    $response->redirect("/admin");
+    $this->response->redirect("/admin");
   }
 }
 

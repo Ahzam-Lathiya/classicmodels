@@ -15,7 +15,7 @@ use app\core\exceptions\ForbiddenException;
 class CustomersController extends Controller
 {
   
-  public function getCustomers(Request $request, Response $response)
+  public function getCustomers()
   {
     if( Application::isGuest() )
     {
@@ -32,21 +32,21 @@ class CustomersController extends Controller
       Application::$app->session->set('customers', $customer->fetchAllrecords() );
     }
     
-    $response->setStatusCode(200);
-    $response->header('Content-Type', 'text/html');
-    return $response->end( $this->render('customers', 
+    $this->response->setStatusCode(200);
+    $this->response->header('Content-Type', 'text/html');
+    return $this->response->end( $this->render('customers', 
                            ['allCustomers' => Application::$app->session->get('customers') ] 
                          ) );
   }
   
   
-  public function getCustomer(Request $request, Response $response)
+  public function getCustomer()
   {
     $customer = new Customers();
     
-    $response->header('Content-Type', 'application/json');
-    $response->setStatusCode(200);
-    return $response->end( json_encode( $customer->fetchCustomer( $request->getOrderPath() ) ) );
+    $this->response->header('Content-Type', 'application/json');
+    $this->response->setStatusCode(200);
+    return $this->response->end( json_encode( $customer->fetchCustomer( $this->request->getOrderPath() ) ) );
   }
   
 }

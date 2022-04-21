@@ -67,9 +67,39 @@ for($i=0; $i<count($allOrders); $i++)
 
 <script>
 
+async function fetchWithURLEncode(payload)
+{
+    let arr = [];
+    
+    console.log("URLEncoding");
+    
+    for( let key in payload )
+    {
+      let str = encodeURIComponent(key) + "=" + encodeURIComponent( payload[key] );
+      arr.push(str);
+    }
+    
+    arr = arr.join("&");
+    
+    console.log(typeof(arr) );
+    
+    let yurl = new URL('http://127.0.0.1:8000/admin/getStatus');
+
+    let response = await fetch(yurl, {
+      method: "POST",
+      headers: {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
+      body: arr,
+    });
+    
+    let promise = await response.json();
+    
+    return promise;
+}
+
+
 async function fetchStuff(value)
 {
-  let yurl = new URL('http://127.0.0.1:8000/getStatus');
+  let yurl = new URL('http://127.0.0.1:8000/admin/getStatus');
   
   let form = new FormData();
   
@@ -78,7 +108,7 @@ async function fetchStuff(value)
   let response = await fetch(yurl, 
 					{
 						method: 'POST',
-						//headers: {'Content-Type': 'application/json'},
+						//headers: {'Content-Type': 'multipart/formdata'},
 						body: form,
 					});
 				
@@ -90,7 +120,8 @@ async function fetchStuff(value)
 
 document.querySelector('#statusDrop').addEventListener('change', function(){
 
- fetchStuff(event.target.value).then( some_data => { 
+ fetchWithURLEncode( {'choice': event.target.value} ).then( function(some_data){
+ //fetchStuff(event.target.value).then( some_data => { 
      //console.log(some_data);
      
      let tableBody = document.querySelector('#ordersTable');

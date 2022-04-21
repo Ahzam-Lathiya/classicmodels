@@ -16,6 +16,8 @@ table, th, td {
   
 </form>
 
+<button id="checkoutButton" type="submit">Proceed To Checkout</button>
+
 <h2>All Products.</h2>
 <?php echo "<p id=\"countHolder\">No. of Products:$count</p>"; ?>
 
@@ -476,26 +478,84 @@ evtSource.onerror = function(){
 }
 */
 
+let cart = [];
+
+/*
 document.querySelectorAll('.productCounter').forEach(elem =>
   elem.addEventListener('change', addProductToCart)
 );
+*/
 
-function addProductToCart()
+async function postCartData(data)
 {
-  let row = event.target.parentElement.parentElement;
+  let serverEndpoint = location.origin + '/site/submitCart';
+  let url_object = new URL(serverEndpoint);
   
-  let productCode = row.querySelector('#identifier').textContent;
+  let response = await fetch(url_object, {
+      method: 'POST',
+      body: data
+  });
+  
+  let promise = await response.json();
+  
+  return promise;
+}
+
+document.querySelector('#checkoutButton').addEventListener('click', function(){
+  event.preventDefault();
+
+  //empty the cart before appending new stuff
+  cart = [];
+  
+  let currentRow = headRow.nextElementSibling;
+  
+  addProductToCart(currentRow);
+  
+  let nextRow = currentRow.nextElementSibling;  
+  
+  while(nextRow !== null)
+  {
+    addProductToCart(nextRow);
+    
+    nextRow = nextRow.nextElementSibling;
+  }
+  
+  let form = new FormData();
+  
+  form.set('body', JSON.stringify(cart) );
+
+  //send the data through POST  
+  postCartData(form).then( function(response){
+    console.log(response);
+  })
+  .catch(
+    function(error)
+    {
+      console.log(error);
+    }
+  );
+  
+
+});
+
+function addProductToCart(row)
+{
+  //let row = event.target.parentElement.parentElement;
   
   /*
   console.log(row.children[6]);
   return;
   */
   
+  let productCode = row.querySelector('#identifier').textContent;
+  
   let productQuantity = parseInt( row.children[6].firstChild.value );
   
-  let productPrice = 0.0;
+  if( !isNaN( productQuantity ) || productQuantity > 0)
+  {
+    let productPrice = 0.0;
   
-  let subTotal = 0.0;
+    let subTotal = 0.0;
   
     productPrice = row.childNodes[5].textContent;
     
@@ -504,11 +564,17 @@ function addProductToCart()
     let payload = {
                  'product': productCode,
                  'quantity': productQuantity,
+                  };
+    /*
                  'priceEach': productPrice,
                  'subTotal': subTotal
                   };
+    */
   
     console.log(payload);
+    
+    cart.push(payload);
+  }
   
 }
 

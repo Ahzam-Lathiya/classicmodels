@@ -15,7 +15,7 @@ use Swoole\Http\Response;
 class ProductsController extends Controller
 {
 
-  public function getProducts(Request $request, Response $response)
+  public function getProducts()
   {
     if( Application::isGuest() )
     {
@@ -37,30 +37,30 @@ class ProductsController extends Controller
     
     $count = count(Application::$app->session->get('products' . $page) );
     
-    $response->header('Content-Type', 'text/html');
-    $response->setStatusCode(200);
-    return $response->end( $this->render('products', [
+    $this->response->header('Content-Type', 'text/html');
+    $this->response->setStatusCode(200);
+    return $this->response->end( $this->render('products', [
                                       'allProducts' => Application::$app->session->get('products' . $page),
                                       'count' => $count ]) );
     
   }
 
   
-  public function getProduct(Request $request, Response $response)
+  public function getProduct()
   {
     $products = new Products();
 
     $this->setLayout('main');
     
-    $prodID = $request->getProductPath();
+    $prodID = $this->request->getProductPath();
     
-    $response->header('Content-Type', 'text/html');
-    $response->setStatusCode(200);
-    return $response->end( $this->render('product_template', ['product' => $products->getProduct($prodID) ]) );
+    $this->response->header('Content-Type', 'text/html');
+    $this->response->setStatusCode(200);
+    return $this->response->end( $this->render('product_template', ['product' => $products->getProduct($prodID) ]) );
   }
   
   
-  public function createProductForm(Request $request, Response $response)
+  public function createProductForm()
   {
     $products = new Products();
     
@@ -68,31 +68,31 @@ class ProductsController extends Controller
 
     $this->setLayout('main');
 
-    $response->header('Content-Type', 'text/html');
-    $response->setStatusCode(200);
-    return $response->end( $this->render('createProduct', [
+    $this->response->header('Content-Type', 'text/html');
+    $this->response->setStatusCode(200);
+    return $this->response->end( $this->render('createProduct', [
                                            'productScales' => $products->fetchProductScales(),
                                            'productLines' => $lines->fetchProductLines(),
                                           ]) );
   }
   
   //works on POST event
-  public function createProduct(Request $request, Response $response)
+  public function createProduct()
   {
     $product = new Products();
     
-    $message = $product->insertRecord( $request->getRequestBody() );
+    $message = $product->insertRecord( $this->request->getRequestBody() );
     
-    $response->setStatusCode(200);
+    $this->response->setStatusCode(200);
     
     //update the products in session with new product
     Application::$app->session->update('products', $product->fetchAllRecords() );
     
-    $response->redirect('/products/addProduct');
+    $this->response->redirect('/products/addProduct');
   }
   
   
-  public function fetchAllNames(Request $request, Response $response)
+  public function fetchAllNames()
   {
     $products = new Products();
     
@@ -114,13 +114,13 @@ class ProductsController extends Controller
     
     //$result = $this->mergeSort($selected);
     */
-    $response->header('Content-Type', 'application/json');
-    $response->setStatusCode(200);
-    return $response->end( json_encode($allProds) );
+    $this->response->header('Content-Type', 'application/json');
+    $this->response->setStatusCode(200);
+    return $this->response->end( json_encode($allProds) );
   }
 
   
-  public function editProductForm(Request $request, Response $response)
+  public function editProductForm()
   {
     $products = new Products();
     
@@ -128,11 +128,11 @@ class ProductsController extends Controller
 
     $this->setLayout('main');
   
-    $prodID = $request->getProductPath();
+    $prodID = $this->request->getProductPath();
 
-    $response->header('Content-Type', 'text/html');
-    $response->setStatusCode(200);
-    return $response->end( $this->render('editProduct', [
+    $this->response->header('Content-Type', 'text/html');
+    $this->response->setStatusCode(200);
+    return $this->response->end( $this->render('editProduct', [
                                            'product' => $products->getProduct($prodID),
                                            'productScales' => $products->fetchProductScales(),
                                            'productLines' => $lines->fetchProductLines(),
@@ -140,29 +140,29 @@ class ProductsController extends Controller
   }
   
   
-  public function editProduct(Request $request, Response $response)
+  public function editProduct()
   {
     $product = new Products();
     
-    $prodID = $request->getProductPath();
+    $prodID = $this->request->getProductPath();
     
-    //$product->loadData( $request->getRequestBody() );
+    //$product->loadData( $this->request->getRequestBody() );
 
-    $message = $product->updateRecord( $request->getRequestBody(), $prodID);
+    $message = $product->updateRecord( $this->request->getRequestBody(), $prodID);
 
     //update the products in session with updated product
     //Application::$app->session->set('products', $product->fetchAllRecords() );
-    $response->header('Content-Type', 'application/json');
-    $response->setStatusCode(200);
-    return $response->end( json_encode(['message' => $message]) );
+    $this->response->header('Content-Type', 'application/json');
+    $this->response->setStatusCode(200);
+    return $this->response->end( json_encode(['message' => $message]) );
   }
 
   
-  public function serverPush(Request $request, Response $response)
+  public function serverPush()
   {
-    $response->header("Content-Type", "text/event-stream");
-    $response->header("Access-Control-Allow-Origin", "*");
-    $response->header("Cache-Control", "no-cache");
+    $this->response->header("Content-Type", "text/event-stream");
+    $this->response->header("Access-Control-Allow-Origin", "*");
+    $this->response->header("Cache-Control", "no-cache");
     
     $statement = Application::$app->db->prepare("SELECT productCode, productName, productLine, productScale, productVendor, productDescription, quantityInStock, buyPrice, MSRP, action FROM products_audit WHERE auditTime + interval 20 second > CURRENT_TIMESTAMP();");
     
@@ -170,7 +170,7 @@ class ProductsController extends Controller
     {
       $data = "event: ping\n";
       
-      $response->write($data);
+      $this->response->write($data);
     
       $statement->execute();
     
@@ -181,7 +181,7 @@ class ProductsController extends Controller
         $result = "event: message\n" .
                   "data: $data2". "\n\n";
                     
-        $response->write($result);
+        $this->response->write($result);
         
       }
       

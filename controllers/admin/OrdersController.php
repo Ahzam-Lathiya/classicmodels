@@ -15,18 +15,18 @@ use app\core\exceptions\ForbiddenException;
 class OrdersController extends Controller
 {
   
-  public function filterByStatus(Request $request, Response $response)
+  public function filterByStatus()
   {
-    $body = $request->getRequestBody();
+    $body = $this->request->getRequestBody();
   
     $allOrders = Application::$app->session->get('orders');
     
     if( $body['choice'] === 'all' )
     {
-      $response->header('Content-Type', 'application/json');
-      $response->setStatusCode(200);
+      $this->response->header('Content-Type', 'application/json');
+      $this->response->setStatusCode(200);
       
-      return $response->end( json_encode($allOrders) );
+      return $this->response->end( json_encode($allOrders) );
     }
     
     $selected = [];
@@ -40,25 +40,24 @@ class OrdersController extends Controller
 
     }
 
-    $response->header('Content-Type', 'application/json');
-    $response->setStatusCode(200);
+    $this->response->header('Content-Type', 'application/json');
+    $this->response->setStatusCode(200);
     
-    return $response->end( json_encode($selected) );
-    //return json_encode($selected);
+    return $this->response->end( json_encode($selected) );
   }
   
   
-  public function getOrder(Request $request, Response $response)
+  public function getOrder()
   {
     $order = new Orders();
 
     $this->setLayout('main');
   
-    $orderID = $request->getOrderPath();
+    $orderID = $this->request->getOrderPath();
     
-    $response->header('Content-Type', 'text/html');
-    $response->setStatusCode(200);
-    return $response->end( $this->render('order_template', [
+    $this->response->header('Content-Type', 'text/html');
+    $this->response->setStatusCode(200);
+    return $this->response->end( $this->render('order_template', [
                                             'orderID' => $orderID,
                                             'orderDetails' => $order->fetchOrderView($orderID),
                                             'order' => $order->fetchSingleOrder($orderID),
@@ -66,7 +65,7 @@ class OrdersController extends Controller
   }
 
 
-  public function getOrders(Request $request, Response $response)
+  public function getOrders()
   {
     //if the user is not logged in
     if( Application::isGuest() )
@@ -98,9 +97,9 @@ class OrdersController extends Controller
     $count = count($allOrd );
     //$count = count($allOrd);
     
-    $response->header('Content-Type', 'text/html');
-    $response->setStatusCode(200);
-    return $response->end( $this->render('order', [
+    $this->response->header('Content-Type', 'text/html');
+    $this->response->setStatusCode(200);
+    return $this->response->end( $this->render('order', [
                                    'allOrders' => $allOrd,
                                    'statusTypes' => $orders->getStatusTypes(),
                                    'count'     => $count, ]) );

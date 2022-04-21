@@ -15,41 +15,41 @@ use Swoole\Coroutine;
 class SiteController extends Controller
 {
 
-  public function home(Request $request, Response $response)
+  public function home()
   {
     $this->setLayout('main');
     
     //return $this->render('home');
     //return 'Greetings From Home Page';
-    $response->header('Content-Type', 'text/html');
-    return $response->end( $this->render('home') );
+    $this->response->header('Content-Type', 'text/html');
+    return $this->response->end( $this->render('home') );
   }
   
   
-  public function about(Request $request, Response $response)
+  public function about()
   {
     $this->setLayout('main');
 
     //return $this->render('about');
     //return 'Greetings From About Page';
-    $response->header('Content-Type', 'text/html');
-    return $response->end( $this->render('about') );
+    $this->response->header('Content-Type', 'text/html');
+    return $this->response->end( $this->render('about') );
   }
   
-  public function allSessions(Request $request, Response $response)
+  public function allSessions()
   {
     $answer = Application::$app->session->userExists('1088');
   
-    $response->header('Content-Type', 'application/json');
-    return $response->end( json_encode($answer) );
+    $this->response->header('Content-Type', 'application/json');
+    return $this->response->end( json_encode($answer) );
   }
 
 
-  public function stuck(Request $request, Response $response)
+  public function stuck()
   {
-    $response->header("Content-Type", "text/event-stream");
-    $response->header("Access-Control-Allow-Origin", "*");
-    $response->header("Cache-Control", "no-cache");
+    $this->response->header("Content-Type", "text/event-stream");
+    $this->response->header("Access-Control-Allow-Origin", "*");
+    $this->response->header("Cache-Control", "no-cache");
     
     $statement = Application::$app->db->prepare("SELECT productCode, productName, productLine, productScale, productVendor, productDescription, quantityInStock, buyPrice, MSRP, action FROM products_audit WHERE auditTime + interval 20 second > CURRENT_TIMESTAMP();");
     
@@ -57,7 +57,7 @@ class SiteController extends Controller
     {
       $data = "event: ping\n";
       
-      $response->write($data);
+      $this->response->write($data);
     
       $statement->execute();
     
@@ -68,7 +68,7 @@ class SiteController extends Controller
         $result = "event: message\n" .
                   "data: $data2". "\n\n";
                     
-        $response->write($result);
+        $this->response->write($result);
         
       }
         

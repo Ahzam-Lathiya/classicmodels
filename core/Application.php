@@ -6,6 +6,7 @@ use app\core\db\Database;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as Response;
 use app\core\exceptions\ForbiddenException;
+use app\core\exceptions\JsonException;
 
 class Application
 {
@@ -132,15 +133,18 @@ class Application
       return $this->router->resolve();
     }
     
-    /*
-    catch(ForbiddenException $e)
+    
+    catch(JsonException $e)
     {
       $this->response->setStatusCode($e->getCode() );
       
       $message = $e->getMessage();
-      return $this->response->end( json_encode(['message' => $message]) );
+      return $this->response->end( json_encode([
+      'code'  => $e->getCode(),
+      'message' => $message
+      ]) );
     }
-    */
+    
     
     catch(\Exception $e)
     {

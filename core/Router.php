@@ -40,12 +40,16 @@ class Router
 
     $callback = $this->routes[$method][$path] ?? false;
 
-    $controller = new $callback[0]();
+    $controllerObj = new $callback[0]();
     
     //set the controller according to the request through the app
-    Application::$app->setController($controller);
+    Application::$app->setController($controllerObj);
+
+    $controllerObj->setRequestObject($this->request);
+
+    $controllerObj->setResponseObject($this->response);
     
-    return call_user_func( array($controller, $callback[1]), $this->request, $this->response );
+    return call_user_func( array($controllerObj, $callback[1]) );
 
     /*
     if($callback === false)

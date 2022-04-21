@@ -15,7 +15,7 @@ use app\core\exceptions\ForbiddenException;
 class ProductLinesController extends Controller
 {
   //GET
-  public function getProductlines(Request $request, Response $response)
+  public function getProductlines()
   {
     //if the user is not logged in
     if( Application::isGuest() )
@@ -27,13 +27,13 @@ class ProductLinesController extends Controller
 
     $this->setLayout('main');
     
-    $response->setStatusCode(200);
-    $response->header('Content-Type', 'text/html');
-    return $response->end( $this->render('productLines', ['productLines' => $lines ] ) );
+    $this->response->setStatusCode(200);
+    $this->response->header('Content-Type', 'text/html');
+    return $this->response->end( $this->render('productLines', ['productLines' => $lines ] ) );
   }
   
   //GET
-  public function productLineForm(Request $request, Response $response)
+  public function productLineForm()
   {
     //if the user is not logged in
     if( Application::isGuest() )
@@ -45,27 +45,27 @@ class ProductLinesController extends Controller
 
     $this->setLayout('main');
     
-    $response->setStatusCode(200);
-    $response->header('Content-Type', 'text/html');
-    return $response->end( $this->render('createProductLine') );
+    $this->response->setStatusCode(200);
+    $this->response->header('Content-Type', 'text/html');
+    return $this->response->end( $this->render('createProductLine') );
   }
   
   
   //POST
-  public function createProductLine(Request $request, Response $response)
+  public function createProductLine()
   {
     $lines = new ProductLines();
     
-    $message = $lines->insertRecord( $request->getRequestBody() );
+    $message = $lines->insertRecord( $this->request->getRequestBody() );
     
     if($message)
     {
-      $response->setStatusCode(200);
-      $response->header('Content-Type', 'Application/json');
-      return $response->end( json_encode(['message' => $message]) );
+      $this->response->setStatusCode(200);
+      $this->response->header('Content-Type', 'Application/json');
+      return $this->response->end( json_encode(['message' => $message]) );
     }
     
-    //return $response->redirect('/productLines/addProductLine');
+    //return $this->response->redirect('/productLines/addProductLine');
   }
   
 }

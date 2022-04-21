@@ -76,7 +76,7 @@ form.addEventListener('submit', function(){
   }
   
 
-  submitForm(payload).then( data => {
+  submitForm(payload).then( function(data){
     console.log(data);
     
     //display message
@@ -85,8 +85,8 @@ form.addEventListener('submit', function(){
     //redirect to the home page "Admin"
     location.href = '/admin';
     
-  }).catch( error => {
-      console.log(error);
+  }).catch( function(error){
+      //console.log(error);
     
       document.querySelector('.messageArea').innerText = error.message;
     });
